@@ -19,7 +19,7 @@ const Navbar = () => {
       }}  className='text-backgroundPink text-base ' variant="link" size="lg">Home</Button>
       </div>
       </div>
-      {session.data?.user?.id ?<Button onClick={async()=>{
+      {session.data?.user ?<Button onClick={async()=>{
         await signOut()
       }} > <LogOut  className='h-5 w-5 mr-2' />Logout</Button> :<Button onClick={()=>{
         router.push("/auth/login")
