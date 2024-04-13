@@ -35,8 +35,7 @@ const page = () => {
     defaultValues: {
       name:"",
       email: "",
-      password:"",
-      confirmpassword:""
+      password:""
     },
   })
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -58,13 +57,13 @@ const page = () => {
 
   return (
     <div className='flex h-[100vh] my-4 justify-center items-center'>
-      <Card  className='shadow-md sm:w-3/12 w-full m-2   '>
-        <CardHeader className='font-extrabold justify-center flex items-center'>
+      <Card  className='sm:w-3/12 w-full m-2   '>
+        <CardHeader className='font-bold justify-center flex items-center'>
           Register
         </CardHeader>
         <CardContent >
         <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
         <FormField
           control={form.control}
           name="name"
@@ -85,7 +84,7 @@ const page = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="jhonbb@example.com" {...field} />
+                <Input placeholder="Enter Email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -97,20 +96,7 @@ const page = () => {
           <FormItem>
             <FormLabel>Password</FormLabel>
             <FormControl>
-              <Input placeholder="******" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="confirmpassword"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Confirm Password</FormLabel>
-            <FormControl>
-              <Input placeholder="******" {...field} />
+              <Input placeholder="Enter Password" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

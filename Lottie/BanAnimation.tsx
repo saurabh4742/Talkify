@@ -1,7 +1,7 @@
 "use client"
 import { Player } from '@lottiefiles/react-lottie-player'
 import React from 'react'
-import animationData from "./BanAnimation.json"
+import animationData from "./BanAnimationPurple.json"
 export const BanAnimation = () => {
   return (
     <div >

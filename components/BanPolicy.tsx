@@ -3,9 +3,9 @@ import React from 'react'
 
 const BanPolicy = () => {
   return (
-    <div id='banpolicies' className='text-foregroundPink text-center p-2  w-full flex justify-center'>
-    <div className="flex-col "><span className='text-4xl font-extrabold border-b-2 border-b-backgroundPink'>Ban Policies</span>
-    <div className='w-full flex justify-center'><div className='sm:w-3/12 w-full'><BanAnimation/></div></div>
+    <div id='banpolicies' className='text-[#14532D] text-center p-2  w-full flex justify-center'>
+    <div className="flex-col "><span className='text-4xl font-extrabold border-b-2 '>Ban Policies</span>
+    {/* <div className='w-full flex justify-center'><div className='sm:w-3/12 w-full'><BanAnimation/></div></div> */}
     <div className="sm:flex my-4 w-full flex-none text-center px-4 sm:justify-between">
     <div className="sm:w-4/12 w-full  space-y-3 ">
         <p className="text-2xl font-bold">Toxic Speech</p>

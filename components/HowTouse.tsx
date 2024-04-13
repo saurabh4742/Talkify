@@ -2,9 +2,9 @@ import React from "react";
 
 export const HowTouse = () => {
   return (
-    <div id="howtouse" className="bg-backgroundPink py-20   sm:items-center rounded-br-3xl rounded-tl-3xl text-white  p-4 w-full space-y-4 space justify-center">
+    <div id="howtouse" className="bg-backgroundPink py-20 bg-[#F0FDF4]  sm:items-center rounded-br-3xl rounded-tl-3xl text-[#14532D]  p-4 w-full space-y-4 space justify-center">
       <div className="flex w-full justify-center">
-        <span className="text-4xl border-b-2 border-b-white  font-extrabold ">
+        <span className="text-4xl border-b-2   font-extrabold ">
           User Guide
         </span>
       </div>

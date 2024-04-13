@@ -32,7 +32,7 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           <Toaster />
-          <div className="flex-col"><Navbar />{children}</div>
+          <div className="flex justify-center h-full items-center flex-col w-full"><Navbar /><div className="h-full w-full">{children}</div></div>
         </SessionProvider>
       </body>
     </html>

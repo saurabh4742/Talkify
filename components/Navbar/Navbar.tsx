@@ -7,16 +7,17 @@ import { Button } from '../ui/button'
 import { LogIn, LogOut} from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useSession ,signOut} from 'next-auth/react'
+import Logo from '../Logo'
 const Navbar = () => {
   const session=useSession();
   const router=useRouter();
   return (
-    <div className='flex justify-between border-b-2 border-b-backgroundPink p-2 shadow-md w-full'>
-      <Image className='cursor-pointer' src={src} width={70} height={70} alt={''} />
+    <div className='flex  justify-between border-b-2  items-center  p-2 shadow-md w-full'>
+      <Logo/>
       <div className='sm:flex hidden'><div className='sm:flex justify-center gap-2'>
       <Button onClick={()=>{
         router.push("/")
-      }}  className='text-backgroundPink text-base ' variant="link" size="lg">Home</Button>
+      }}  className=' text-base ' variant="link" size="lg">Home</Button>
       </div>
       </div>
       {session.data?.user ?<Button onClick={async()=>{

@@ -57,11 +57,11 @@ const page = () => {
     <div className='flex h-[100vh] justify-center items-center'>
       <Card className='sm:w-3/12 w-full m-2 '>
         <CardHeader className='font-bold justify-center flex items-center'>
-          Welcome , Please Login First
+          Login
         </CardHeader>
         <CardContent>
         <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
         <FormField
           control={form.control}
           name="email"
@@ -69,7 +69,7 @@ const page = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Enter Password" {...field} />
+                <Input placeholder="Enter Email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,12 +81,13 @@ const page = () => {
           <FormItem>
             <FormLabel>Password</FormLabel>
             <FormControl>
-              <Input placeholder="******" {...field} />
+              <Input placeholder="Enter Password" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
+      <Button variant="link">Forgot Password</Button>
       <div className='flex justify-center w-full'><Button className='w-full' size="lg" type="submit">Login</Button></div>
       </form>
     </Form>
