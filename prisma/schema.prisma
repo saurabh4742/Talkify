@@ -39,5 +39,8 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  imageKey      String?
+  Currently     String?
+  Online        Boolean?
   accounts      Account[]
 }

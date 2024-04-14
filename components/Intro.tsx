@@ -13,7 +13,7 @@ const Intro = () => {
             <h1 className='sm:text-6xl text-backgroundGreen text-4xl font-bold'>Talkify</h1>
             <div className='w-full flex justify-center text-center text-[#14532D]'><p className='sm:text-3xl text-2xl w-8/12 '>Real-Time Video Conferencing Tool with Content Monitoring</p></div>
            <Button  onClick={()=>{
-            router.push("/live")
+            router.push("/start")
            }} size="lg">Try Now!</Button>
             <div className='w-full'> <Button  variant="link" size="lg">Read More</Button></div>
         </div>

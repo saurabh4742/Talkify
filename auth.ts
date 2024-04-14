@@ -2,7 +2,7 @@ import authConfig from "./auth.config"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { db } from "./utils/db"
 import NextAuth from "next-auth"
- 
+
 export const {
   handlers: { GET, POST },
   auth,signIn,signOut
@@ -21,6 +21,7 @@ export const {
     async session({session,token}){
       if(token.sub && session.user ){
         session.user.id=token.sub
+        // session.user.role=token.role
       }
       return session;
     },
