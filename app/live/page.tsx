@@ -12,8 +12,8 @@ const Live = () => {
       
         {/* <div className=' bg-background  shadow-lg rounded-2xl sm:h-full sm:w-full'> <LIveKItRTCComponent/></div> */}
       </div>
-      <div className='sm:h-full sm:w-8/12 w-full h-[40vh] flex flex-col bg-background shadow-lg rounded-2xl p-2 justify-between  items-center'>
-      <div className='  text-lg overflow-auto w-full h-[20vh] p-4 gap-4  sm:flex flex-col justify-center items-center '>
+      <div className='sm:h-full sm:w-8/12 w-full flex flex-col bg-background shadow-lg rounded-2xl p-2 justify-between  items-center'>
+      <div className='  text-lg overflow-auto w-full  p-4 gap-4  sm:flex flex-col justify-center items-center '>
       <p className='w-full flex justify-start items-center'><span className='text-red-600 '>Random:</span>Ami Tumake Bhalo basi</p>
       <p className='w-full flex justify-Start  items-center'><span className='text-primary '>You:</span>Ek to pori</p>
       <p className='w-full flex justify-start items-center'><span className='text-red-600 '>Random:</span>Ami Tumake Bhalo basi</p>
