@@ -13,11 +13,13 @@ import {
 import { Track } from 'livekit-client';
 import { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 export default function LIveKItRTCComponent() {
   //  get user input for server and name
-  const room = "q112233";
-  const name = "Saurabh Anand";
+  const session=useSession();
+  const room = "Uniq12345";
+  const name = session.data?.user?.name;
   const [token, setToken] = useState("");
 
   useEffect(() => {
