@@ -48,13 +48,13 @@ export default function LIveKItRTCComponent() {
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       
       data-lk-theme="default"
-      className=' relative flex justify-end items-center flex-col shadow-lg rounded-2xl sm:h-full  sm:w-full'
+      className=' relative flex w-full justify-center items-center shadow-lg rounded-2xl '
     >
       
       <MyVideoConference  />
       
       <RoomAudioRenderer />
-      {/* <ControlBar  className='absolute sm:w-3/12' /> */}
+      {/* <ControlBar   /> */}
     </LiveKitRoom>
   );
 }
