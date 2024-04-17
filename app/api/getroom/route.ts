@@ -39,3 +39,35 @@ export async function GET(req: NextRequest) {
         return new NextResponse(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
     }
 }
+
+export async function PUT(req: NextRequest) {
+    try {
+        const {id,room,capacity}=await req.json();
+        const server = await db.server.findUnique({
+            where: {
+                id: room
+            }
+            ,include: {
+                users: true // Include the users associated with the server
+            }
+        });
+        
+        if (server && server.capacity !== undefined) {
+            const updatedCapacity = server.capacity + capacity;
+            const updatedUsers = [...server.users, id];
+            const updatedServer = await db.server.update({
+                where: {
+                    id: room
+                },
+                data: {
+                    capacity: updatedCapacity,users: {
+                        set: updatedUsers // Set the entire users array to the updated array
+                    }
+                }
+            });}
+            return new NextResponse(JSON.stringify({success:true}),{status:200});
+    } catch (error) {
+        console.error("Error:", error);
+        return new NextResponse(JSON.stringify({ error: "Internal Server Error" }), { status: 500 });
+    }
+}

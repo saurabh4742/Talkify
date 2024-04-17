@@ -8,23 +8,35 @@ import { MonitorPlay } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useMyContext } from "@/ContextProvider";
+import { useSession } from "next-auth/react";
 const Live = () => {
   const [matching, setMatching] = useState(false);
   const router = useRouter();
+  const session=useSession();
+  const id=session.data?.user?.id
+
   const { room, setRoom } = useMyContext();
   const startMatchmaking = async () => {
     try {
+      setMatching(true)
       const res = await axios.get("/api/getroom");
+      setMatching(false)
       if (res.data.server) {
         setRoom(res.data.server.id);
       }
+      
     } catch (error) {
       setRoom("");
+      setMatching(false)
     }
   };
-  const stopMatchmaking=()=>{
-    setRoom("");
-    window.location.reload();
+  const stopMatchmaking=async ()=>{
+    try {
+      const res=await axios.put("/api/getroom",{id,room,capacity:-1})
+      setRoom("");
+      window.location.reload();
+    } catch (error) {
+    }
   }
   return (
     <div className="w-full sm:h-[90vh] bg-white sm:flex space-y-4 items-center  justify-center p-2 text-3xl ">

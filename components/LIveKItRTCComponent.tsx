@@ -20,22 +20,27 @@ import { useMyContext } from '@/ContextProvider';
 export default function LIveKItRTCComponent() {
  const {room} =useMyContext();
   const session=useSession();
-
   const name = session.data?.user?.name;
+  const id=session.data?.user?.id
   const [token, setToken] = useState("");
   useEffect(() => {
     (async () => {
-      try {
-        const resp = await fetch(
-          `/api/livekit?room=${room}&username=${name}`
-        );
-        const data = await resp.json();
-        setToken(data.token);
-      } catch (e) {
-        console.error(e);
+      if(room && id){
+        try {
+          const resp = await fetch(
+            `/api/livekit?room=${room}&username=${name}`
+          );
+          const data = await resp.json();
+          setToken(data.token);
+          if(token){
+            const res=await axios.put("/api/getroom",{id,room,capacity:1})
+          }
+        } catch (e) {
+          console.error(e);
+        }
       }
     })();
-  }, [name,room]);
+  }, [id, name, room, token]);
 
   if (token === "") {
     return <div className='flex justify-center items-center w-full h-full text-lg'><Loader2 className='animate-spin '/></div>;
