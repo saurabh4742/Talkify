@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar/Navbar";
+import { MyContextProvider } from "@/ContextProvider";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -31,8 +32,11 @@ export default async function RootLayout({
         )}
       >
         <SessionProvider session={session}>
+          <MyContextProvider>
           <Toaster />
           <div className="flex justify-center h-full items-center flex-col w-full"><Navbar /><div className="h-full w-full">{children}</div></div>
+          </MyContextProvider>
+          
         </SessionProvider>
       </body>
     </html>
