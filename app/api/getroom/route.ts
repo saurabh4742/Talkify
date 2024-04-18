@@ -1,7 +1,7 @@
 import { db } from "@/utils/db";
 import { NextResponse, NextRequest } from "next/server";
 
-async function getRandomServerWithCapacity(capacity: number) {
+async function getRandomServerWithCapacity(capacity: string) {
     // Find all servers with the specified capacity
     const servers = await db.server.findMany({
         where: {
@@ -23,10 +23,10 @@ async function getRandomServerWithCapacity(capacity: number) {
 
 export async function GET(req: NextRequest) {
     try {
-        let server = await getRandomServerWithCapacity(1);
+        let server = await getRandomServerWithCapacity("1");
 
         if (!server) {
-            server = await getRandomServerWithCapacity(0);
+            server = await getRandomServerWithCapacity("0");
         }
 
         if (server) {
@@ -53,18 +53,57 @@ export async function PUT(req: NextRequest) {
         });
         
         if (server && server.capacity !== undefined) {
-            const updatedCapacity = server.capacity + capacity;
             const updatedUsers = [...server.users, id];
-            const updatedServer = await db.server.update({
-                where: {
-                    id: room
-                },
-                data: {
-                    capacity: updatedCapacity,users: {
-                        set: updatedUsers // Set the entire users array to the updated array
+            if(server.capacity==="0" && capacity===1){
+                const updatedServer = await db.server.update({
+                    where: {
+                        id: room
+                    },
+                    data: {
+                        capacity: "1",users: {
+                            set: updatedUsers 
+                        }
                     }
-                }
-            });}
+                })
+            }
+            else if(server.capacity==="1" && capacity===1){
+                const updatedServer = await db.server.update({
+                    where: {
+                        id: room
+                    },
+                    data: {
+                        capacity: "2",users: {
+                            set: updatedUsers 
+                        }
+                    }
+                })
+            }
+             if(server.capacity=="2" && capacity===-1){
+                const updatedServer = await db.server.update({
+                    where: {
+                        id: room
+                    },
+                    data: {
+                        capacity: "1",users: {
+                            set: updatedUsers 
+                        }
+                    }
+                })
+            }
+            else if(server.capacity=="1" && capacity===-1){
+                const updatedServer = await db.server.update({
+                    where: {
+                        id: room
+                    },
+                    data: {
+                        capacity: "0",users: {
+                            set: updatedUsers 
+                        }
+                    }
+                })
+            }
+                
+            ;}
             return new NextResponse(JSON.stringify({success:true}),{status:200});
     } catch (error) {
         console.error("Error:", error);

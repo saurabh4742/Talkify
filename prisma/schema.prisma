@@ -52,7 +52,7 @@ model User {
 model Server {
   id       String @id @default(cuid()) @map("_id")
   name     String
-  capacity Int
+  capacity String
   users    User[]
   chats    Chat[]
 }
