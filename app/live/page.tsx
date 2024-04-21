@@ -2,8 +2,8 @@
 import LIveKItRTCComponent from "@/components/LIveKItRTCComponent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SendHorizontal, StopCircle } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Loader2, SendHorizontal, StopCircle } from "lucide-react";
+import React, {  useState } from "react";
 import { MonitorPlay } from "lucide-react";
 import axios from "axios";
 import { useMyContext } from "@/ContextProvider";
@@ -13,38 +13,41 @@ import { useQuery } from "@tanstack/react-query";
 import { Chat } from "@prisma/client";
 const Live = () => {
   const [matching, setMatching] = useState(false);
-  const session=useSession();
-  const id=session.data?.user?.id
-  const[send,isSending]=useState(false)
+  const session = useSession();
+  const id = session.data?.user?.id;
+  const [send, isSending] = useState(false);
   const { room, setRoom } = useMyContext();
-  const [message,setMessage]=useState("")
+  const [message, setMessage] = useState("");
   const startMatchmaking = async () => {
     try {
-      setMatching(true)
+      setMatching(true);
       const res = await axios.get("/api/getroom");
-      setMatching(false)
+      setMatching(false);
       if (res.data.server) {
         setRoom(res.data.server.id);
       }
-      
     } catch (error) {
       setRoom("");
-      setMatching(false)
+      setMatching(false);
     }
   };
 
-  const SendMessages=async()=>{
+  const SendMessages = async () => {
     try {
-      isSending(true)
-      const res=await axios.post("/api/endtoendchat",{serverId:room, senderId:id, message})
-      isSending(false)
-      setMessage("")
+      isSending(true);
+      const res = await axios.post("/api/endtoendchat", {
+        serverId: room,
+        senderId: id,
+        message,
+      });
+      isSending(false);
+      setMessage("");
     } catch (error) {
-      setMessage("")
-      console.log("Hgt error sending message")
-      isSending(false)
+      setMessage("");
+      console.log("Hgt error sending message");
+      isSending(false);
     }
-  }
+  };
 
   const FetchChats = async () => {
     try {
@@ -63,14 +66,13 @@ const Live = () => {
     enabled: true,
     refetchOnWindowFocus: true,
   });
-  const stopMatchmaking=async ()=>{
+  const stopMatchmaking = async () => {
     try {
-      const res=await axios.put("/api/getroom",{id,room,capacity:-1})
+      const res = await axios.put("/api/getroom", { id, room, capacity: -1 });
       setRoom("");
       window.location.reload();
-    } catch (error) {
-    }
-  }
+    } catch (error) {}
+  };
   return (
     <div className="w-full sm:h-[90vh] bg-white sm:flex space-y-4 items-center  justify-center p-2 text-3xl ">
       <div className="sm:h-full    sm:w-4/12 p-2   sm:flex sm:flex-col justify-center gap-4  items-center">
@@ -79,53 +81,60 @@ const Live = () => {
       <div className="sm:h-full sm:w-8/12 w-full flex flex-col bg-background shadow-lg rounded-2xl p-2 justify-between  items-center">
         {room ? (
           <>
-                <div className="text-lg overflow-auto w-full p-4 gap-4 sm:flex flex-col justify-center items-center">
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Error: {error.message}</div>}
-      {data && (
-        <>
-          {data.map((chat:Chat) => (
-            <p
-              key={chat.id}
-              className={`w-full flex justify-start items-center`}
-            >
-              <span className={`text-${chat.senderId === id ? 'primary' : 'red-600'}`}>
-                {chat.senderId === id ? 'You' : 'Random'}:
-              </span>
-              {chat.message}
-            </p>
-          ))}
-        </>
-      )}
-    </div>
+            <div className="text-lg overflow-auto w-full p-4 gap-4 sm:flex flex-col justify-center items-center">
+              {isLoading && <div className='flex justify-center items-center w-full h-full text-lg'><Loader2 className='animate-spin '/></div>}
+              {isError && <div>Error: {error.message}</div>}
+              {data && (
+                <>
+                  {data.map((chat: Chat) => (
+                    <p
+                      key={chat.id}
+                      className={`w-full flex justify-start items-center`}
+                    >
+                      <span
+                        className={`text-${
+                          chat.senderId === id ? "primary" : "red-600"
+                        }`}
+                      >
+                        {chat.senderId === id ? "You" : "Random"}:
+                      </span>
+                      {chat.message}
+                    </p>
+                  ))}
+                </>
+              )}
+            </div>
             <div className="w-full h-2/6 flex justify-between items-center p-2 gap-2">
-            <Button onClick={
-              stopMatchmaking
-            } variant="destructive" size="lg" ><StopCircle/>Stop</Button>
+              <Button onClick={stopMatchmaking} variant="destructive" size="lg">
+                <StopCircle />
+                Stop
+              </Button>
               <div className="w-full relative flex justify-between items-center ">
-                <Input placeholder="Chat Now..." value={message} onChange={(e)=>{
-                    setMessage(e.target.value)
-                }} />
-                <Button disabled={send}
-                onClick={SendMessages}
+                <Input
+                  placeholder="Chat Now..."
+                  value={message}
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                  }}
+                />
+                <Button
+                  disabled={send}
+                  onClick={SendMessages}
                   className="absolute  right-0 p-2 rounded-xl "
                   variant="outline"
                 >
                   <SendHorizontal />
                 </Button>
               </div>
-              
             </div>
-            
           </>
         ) : (
           <div className="w-full sm:h-[90vh]  bg-white flex flex-col items-center gap-4  justify-center text-sm p-2">
-            <Button size="lg" disabled={ matching}  onClick={startMatchmaking}>
+            <Button size="lg" disabled={matching} onClick={startMatchmaking}>
               <MonitorPlay className="mr-2" />{" "}
               {matching ? "Matching..." : "Start Matching"}
             </Button>
-            <BanPolicy/>
-            
+            <BanPolicy />
           </div>
         )}
       </div>
