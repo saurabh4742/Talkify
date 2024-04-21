@@ -24,6 +24,8 @@ export default function LIveKItRTCComponent() {
   const id=session.data?.user?.id
   const [token, setToken] = useState("");
   useEffect(() => {
+    
+    
     (async () => {
       if(room && id){
         try {
@@ -37,6 +39,13 @@ export default function LIveKItRTCComponent() {
           }
         } catch (e) {
           console.error(e);
+        }
+      }
+      if(!token){
+        try {
+          const response = await axios.delete(`/api/endtoendchat`);
+        } catch (error) {
+          console.log(error)
         }
       }
     })();

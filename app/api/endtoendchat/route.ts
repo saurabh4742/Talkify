@@ -67,5 +67,14 @@ export async function DELETE(req: NextRequest) {
         },
       });
     }
-  } catch (error) {}
+    return new NextResponse(JSON.stringify({success: true }), {
+      status: 200,
+    });
+  } catch (error) {
+    console.log(error)
+    return new NextResponse(
+      JSON.stringify({ error: "Internal Server Error" }),
+      { status: 500 }
+    );
+  }
 }

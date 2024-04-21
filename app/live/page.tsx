@@ -61,7 +61,7 @@ const Live = () => {
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["chats"],
     queryFn: FetchChats,
-    refetchInterval: 2000,
+    refetchInterval: 1000,
     refetchIntervalInBackground: true,
     enabled: true,
     refetchOnWindowFocus: true,
