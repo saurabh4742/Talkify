@@ -1,7 +1,6 @@
 export const publicRoutes=[
     "/auth/signup",
-    "/",
-    "/api/getroom"
+    "/"
 ]
 
 export const authRoute=[
