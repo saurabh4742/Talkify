@@ -81,7 +81,7 @@ const Live = () => {
           </>
         ) : (
           <div className="w-full sm:h-[90vh] bg-white flex items-center  justify-center p-2 text-3xl">
-            <Button size="lg" disabled={matching} onClick={startMatchmaking}>
+            <Button size="lg" disabled={ matching}  onClick={startMatchmaking}>
               <MonitorPlay className="mr-2" />{" "}
               {matching ? "Matching..." : "Start Matching Now"}
             </Button>

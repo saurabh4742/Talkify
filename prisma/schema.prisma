@@ -40,20 +40,15 @@ model User {
   emailVerified DateTime?
   image         String?
   imageKey      String?
-  Currently     String?
-  Online        Boolean?
   accounts      Account[]
-  serverId      String?
   chat          Chat[]
-  server        Server?      @relation(fields: [serverId], references: [id], onDelete: Cascade)
   reported      UserReport[]
 }
 
 model Server {
   id       String @id @default(cuid()) @map("_id")
   name     String
-  capacity String
-  users    User[]
+  capacity Int
   chats    Chat[]
 }
 
