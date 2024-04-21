@@ -7,6 +7,7 @@ import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/Navbar/Navbar";
 import { MyContextProvider } from "@/ContextProvider";
+import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -33,10 +34,14 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           <MyContextProvider>
-          <Toaster />
-          <div className="flex justify-center h-full items-center flex-col w-full"><Navbar /><div className="h-full w-full">{children}</div></div>
+            <ReactQueryProvider>
+              <Toaster />
+              <div className="flex justify-center h-full items-center flex-col w-full">
+                <Navbar />
+                <div className="h-full w-full">{children}</div>
+              </div>
+            </ReactQueryProvider>
           </MyContextProvider>
-          
         </SessionProvider>
       </body>
     </html>
