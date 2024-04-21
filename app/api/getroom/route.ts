@@ -57,7 +57,7 @@ export async function PUT(request: NextRequest) {
     if (server) {
       let updatedCapacity = server.capacity + capacity;
       if (updatedCapacity < 0) updatedCapacity = 0; // Ensure capacity doesn't go negative
-
+      if(capacity >2) updatedCapacity = 2
       // Update server capacity
       const updatedServer = await db.server.update({
         where: {

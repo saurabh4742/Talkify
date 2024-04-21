@@ -5,16 +5,15 @@ import { Input } from "@/components/ui/input";
 import { SendHorizontal, StopCircle } from "lucide-react";
 import React, { useState } from "react";
 import { MonitorPlay } from "lucide-react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useMyContext } from "@/ContextProvider";
 import { useSession } from "next-auth/react";
+import BanPolicy from "@/components/BanPolicy";
 const Live = () => {
   const [matching, setMatching] = useState(false);
-  const router = useRouter();
   const session=useSession();
   const id=session.data?.user?.id
-
+  const[next,isNext]=useState(false)
   const { room, setRoom } = useMyContext();
   const startMatchmaking = async () => {
     try {
@@ -30,6 +29,22 @@ const Live = () => {
       setMatching(false)
     }
   };
+
+  const nextMatchmaking=async()=>{
+    try {
+      isNext(true)
+      const res=await axios.put("/api/getroom",{id,room,capacity:-1})
+      const response = await axios.get("/api/getroom");
+      // setRoom("")
+      if (response.data.server) {
+        setRoom(response.data.server.id);
+      }
+      isNext(false)
+    } catch (error) {
+      isNext(false)
+    }
+  }
+
   const stopMatchmaking=async ()=>{
     try {
       const res=await axios.put("/api/getroom",{id,room,capacity:-1})
@@ -63,7 +78,9 @@ const Live = () => {
               </p>
             </div>
             <div className="w-full h-2/6 flex justify-between items-center p-2 gap-2">
-              <Button size="lg">Next</Button>
+            <Button onClick={
+              stopMatchmaking
+            } variant="destructive" size="lg" ><StopCircle/>Stop</Button>
               <div className="w-full relative flex justify-between items-center ">
                 <Input placeholder="Chat Now..." />
                 <Button
@@ -75,16 +92,16 @@ const Live = () => {
               </div>
               
             </div>
-            <Button onClick={
-              stopMatchmaking
-            } variant="destructive" size="lg" ><StopCircle/>Stop</Button>
+            
           </>
         ) : (
-          <div className="w-full sm:h-[90vh] bg-white flex items-center  justify-center p-2 text-3xl">
+          <div className="w-full sm:h-[90vh]  bg-white flex flex-col items-center gap-4  justify-center text-sm p-2">
             <Button size="lg" disabled={ matching}  onClick={startMatchmaking}>
               <MonitorPlay className="mr-2" />{" "}
-              {matching ? "Matching..." : "Start Matching Now"}
+              {matching ? "Matching..." : "Start Matching"}
             </Button>
+            <BanPolicy/>
+            
           </div>
         )}
       </div>

@@ -17,7 +17,7 @@ const Page = () => {
   return (
     <div className='flex flex-col h-[90vh] justify-center items-center gap-4'>
       <h1 className="text-3xl font-bold text-center mb-4">Welcome to Talkify!</h1>
-      <p className="text-lg text-center mb-8">
+      <p className="text-lg text-center mb-8 sm:w-4/12 p-2">
         Talkify is a platform where you can connect with random users for engaging conversations. Click the button below to start matching with a new conversation partner.
       </p>
       <Button size="lg" disabled={matching} onClick={startMatchmaking}>
