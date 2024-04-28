@@ -87,9 +87,12 @@ const page = () => {
           </FormItem>
         )}
       />
-      <Button variant="link">Forgot Password</Button>
+      
       <div className='flex justify-center w-full'><Button className='w-full' size="lg" type="submit">Login</Button></div>
       </form>
+      <Button variant="link" onClick={()=>{
+        router.push("/auth/resetpassword")
+      }}>Reset Password</Button>
     </Form>
     </CardContent>
         <CardFooter className='flex-col w-full gap-2 justify-center'>

@@ -2,6 +2,7 @@ import authConfig from "./auth.config";
 import NextAuth from "next-auth";
 const { auth } = NextAuth(authConfig);
 import {
+  passwordReset,
   authRoute,
   apiPrefix,
   DEFAULT_LOGIN_REDIRECT,
@@ -11,10 +12,13 @@ import {
 export default auth((req) => {
   const { nextUrl } = req;
   const isloggedin = !!req.auth;
+  const isPasswordReset=nextUrl.pathname.startsWith(passwordReset)
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiPrefix);
   const isAuthRoute = authRoute.includes(nextUrl.pathname);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-
+  if(isPasswordReset){
+    return
+  }
   if(isApiAuthRoute){
     return 
   }

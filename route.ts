@@ -4,6 +4,9 @@ export const publicRoutes=[
 ]
 
 export const authRoute=[
+    "/auth/resetpassword",
+    "/api/sendmail",
+    "/api/passwordreset",
     "/auth/login",
     "/auth/register",
     "/api/auth/login",
@@ -11,5 +14,5 @@ export const authRoute=[
     
 ]
 export const apiPrefix="/api/auth"
-
+export const passwordReset="/auth/resetpassword"
 export const DEFAULT_LOGIN_REDIRECT='/'

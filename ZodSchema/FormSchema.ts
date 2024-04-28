@@ -8,3 +8,9 @@ export const LoginFormSchema=z.object({
     email: z.string().email({message:"Invaild email type"}),
     password:z.string(),
 });
+export const ResetFormSchema=z.object({
+    email: z.string().email({message:"Invaild email type"})
+});
+export const NewPasswordFormSchema = z.object({
+    password: z.string().min(6, { message: "New Password Must have Minimum 6 characters required" })
+})

@@ -54,7 +54,7 @@ const Live = () => {
       const response = await axios.get(`/api/endtoendchat?serverId=${room}`);
       return response.data.chats;
     } catch (error) {
-      return null; // Return an empty array if there's an error
+      return null; 
     }
   };
 
@@ -132,7 +132,7 @@ const Live = () => {
           <div className="w-full sm:h-[90vh]  bg-white flex flex-col items-center gap-4  justify-center text-sm p-2">
             <Button size="lg" disabled={matching} onClick={startMatchmaking}>
               <MonitorPlay className="mr-2" />{" "}
-              {matching ? "Matching..." : "Start Matching"}
+              {matching ? "Going..." : "Go Live"}
             </Button>
             <BanPolicy />
           </div>

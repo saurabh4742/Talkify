@@ -3,7 +3,6 @@
 import '@livekit/components-styles';
 import {
   LiveKitRoom,
-  VideoConference,
   GridLayout,
   ParticipantTile,
   RoomAudioRenderer,
@@ -12,7 +11,6 @@ import {
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
 import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useMyContext } from '@/ContextProvider';
@@ -52,7 +50,7 @@ export default function LIveKItRTCComponent() {
   }, [id, name, room, token]);
 
   if (token === "") {
-    return <div className='flex justify-center items-center w-full h-full text-lg'><Loader2 className='animate-spin '/></div>;
+    return <div className='flex justify-center items-center w-full h-full text-lg'></div>;
   }
 
   return (
@@ -68,7 +66,9 @@ export default function LIveKItRTCComponent() {
       
       <MyVideoConference  />
       
-      <RoomAudioRenderer />
+      <RoomAudioRenderer // Render audio
+         // Capture audio track
+      />
       {/* <ControlBar   /> */}
     </LiveKitRoom>
   );
