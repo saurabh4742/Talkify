@@ -6,8 +6,8 @@ export async function POST(req:NextRequest) {
     
 
   try {
-    const username = process.env.NEXT_PUBLIC_EMAIL_USERNAME
-    const password = process.env.NEXT_PUBLIC_EMAIL_PASSWORD;
+    const username = process.env.EMAIL_USERNAME
+    const password = process.env.EMAIL_PASSWORD;
     const { email } = await req.json()
     const user=await db.user.findUnique({where:{email}})
     if(user){
