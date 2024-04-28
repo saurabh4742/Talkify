@@ -19,7 +19,7 @@ export async function POST(req:NextRequest) {
     <div style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
         <p>Hello ${user?.name},</p>
         <p>To reset your password, please click on the following link:</p>
-        <p><a href="http://localhost:3000/auth/resetpassword/${user?.id}" style="background-color: #22C55E; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Reset Password</a></p>
+        <p><a href="${process.env.APP_URL}/auth/resetpassword/${user?.id}" style="background-color: #22C55E; color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Reset Password</a></p>
         <p>If you didn't request this, you can ignore this email.</p>
         <p>Thanks,</p>
         <p>The ${process.env.APP_NAME} Team</p>
