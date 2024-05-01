@@ -43,6 +43,7 @@ model User {
   accounts      Account[]
   chat          Chat[]
   reported      UserReport[]
+  banned        Boolean @default(false)
 }
 
 model Server {

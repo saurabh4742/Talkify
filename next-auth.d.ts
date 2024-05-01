@@ -1,6 +1,6 @@
 import  { type DefaultSession } from "next-auth"
 export type ExtendedUser =DefaultSession["user"] & {
-    // imageKey?:string
+    banned?:boolean
 }
 declare module "next-auth" {
   interface Session {
@@ -11,6 +11,6 @@ declare module "next-auth" {
 import {JWT} from "next-auth/jwt"
  declare module "next-auth/jwt"{
     interface JWT{
-        // imageKey?:string
+      banned?:boolean
     }
  }

@@ -19,9 +19,10 @@ export const {
   },
   callbacks:{
     async session({session,token}){
-      if(token.sub && session.user ){
+      if(token.sub && session.user){
         session.user.id=token.sub
-        // session.user.role=token.role
+        const existuser= await db.user.findUnique({where:{id:session.user.id}})
+        session.user.banned=existuser?.banned
       }
       return session;
     },

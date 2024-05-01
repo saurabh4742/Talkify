@@ -11,6 +11,9 @@ import { useSession } from "next-auth/react";
 import BanPolicy from "@/components/BanPolicy";
 import { useQuery } from "@tanstack/react-query";
 import { Chat } from "@prisma/client";
+import { abusiveWords } from "@/Abuse";
+import toast from "react-hot-toast";
+import { YouAreBanned } from "@/components/YouAreBanned";
 const Live = () => {
   const [matching, setMatching] = useState(false);
   const session = useSession();
@@ -35,11 +38,26 @@ const Live = () => {
   const SendMessages = async () => {
     try {
       isSending(true);
-      const res = await axios.post("/api/endtoendchat", {
-        serverId: room,
-        senderId: id,
-        message,
-      });
+      const containsAbusiveWord = abusiveWords.some(word =>
+        message.toLowerCase().includes(word.toLowerCase())
+      );
+  
+      if (containsAbusiveWord) {
+        const exitroom = await axios.put("/api/getroom", { id, room, capacity: -1 });
+      setRoom("");
+        const res = await axios.post("/api/liveban", {
+          id
+        });
+        toast.success("vulgur detected, WARNING");
+      } else {
+        // If no abusive words detected, send the message
+        const res = await axios.post("/api/endtoendchat", {
+          serverId: room,
+          senderId: id,
+          message,
+        });
+        setMessage("");
+      }
       isSending(false);
       setMessage("");
     } catch (error) {
@@ -73,7 +91,13 @@ const Live = () => {
       window.location.reload();
     } catch (error) {}
   };
+  if (session.data?.user?.banned)
+    {
+      return (<YouAreBanned/>)
+    }
+  else{
   return (
+    
     <div className="w-full sm:h-[90vh] bg-white sm:flex space-y-4 items-center  justify-center p-2 text-3xl ">
       <div className="sm:h-full    sm:w-4/12 p-2   sm:flex sm:flex-col justify-center gap-4  items-center">
         <LIveKItRTCComponent />
@@ -140,6 +164,7 @@ const Live = () => {
       </div>
     </div>
   );
+}
 };
 
 export default Live;
