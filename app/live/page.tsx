@@ -1,4 +1,11 @@
 "use client";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 import LIveKItRTCComponent from "@/components/LIveKItRTCComponent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +21,7 @@ import { Chat } from "@prisma/client";
 import { abusiveWords } from "@/Abuse";
 import toast from "react-hot-toast";
 import { YouAreBanned } from "@/components/YouAreBanned";
+import { PiWarning } from "react-icons/pi";
 const Live = () => {
   const [matching, setMatching] = useState(false);
   const session = useSession();
@@ -43,11 +51,11 @@ const Live = () => {
       );
   
       if (containsAbusiveWord) {
-        const exitroom = await axios.put("/api/getroom", { id, room, capacity: -1 });
-      setRoom("");
         const res = await axios.post("/api/liveban", {
           id
         });
+        const exitroom = await axios.put("/api/getroom", { id, room, capacity: -1 });
+      setRoom("");
         toast.success("vulgur detected, WARNING");
       } else {
         // If no abusive words detected, send the message
@@ -129,6 +137,16 @@ const Live = () => {
               )}
             </div>
             <div className="w-full h-2/6 flex justify-between items-center p-2 gap-2">
+            <TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger><Button className="rounded-2xl" size="icon" variant="destructive"><PiWarning/></Button></TooltipTrigger>
+    <TooltipContent className="rounded-none">
+      <p>Report</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+              
               <Button onClick={stopMatchmaking} variant="destructive" size="lg">
                 <StopCircle />
                 Stop
