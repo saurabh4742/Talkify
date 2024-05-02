@@ -57,6 +57,7 @@ const Live = () => {
         const exitroom = await axios.put("/api/getroom", { id, room, capacity: -1 });
       setRoom("");
         toast.success("vulgur detected, WARNING");
+        window.location.reload();
       } else {
         // If no abusive words detected, send the message
         const res = await axios.post("/api/endtoendchat", {
