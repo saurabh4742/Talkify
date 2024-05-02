@@ -51,11 +51,11 @@ const Live = () => {
       );
   
       if (containsAbusiveWord) {
+        const exitroom = await axios.put("/api/getroom", { id, room, capacity: -1 });
+      setRoom("");
         const res = await axios.post("/api/liveban", {
           id
         });
-        const exitroom = await axios.put("/api/getroom", { id, room, capacity: -1 });
-      setRoom("");
         toast.success("vulgur detected, WARNING");
         window.location.reload();
       } else {
