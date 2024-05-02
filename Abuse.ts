@@ -1,6 +1,6 @@
 export const abusiveWords=[
     "http",
-    "https"
+    "https",
     "chutiya",
     "madharchod",
     "bhenchod",
