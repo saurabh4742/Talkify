@@ -16,6 +16,7 @@ export async function POST(req:NextRequest) {
                 email,password:hashpassword,name
             }
         })
+        
         return NextResponse.json({message:`Registerd ${user.email}`},{status:200})
     } catch (error) {
         console.log("error from user creation")
