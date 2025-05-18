@@ -10,8 +10,8 @@ import LIveKItRTCComponent from "@/components/LIveKItRTCComponent";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2, SendHorizontal, StopCircle } from "lucide-react";
-import React, {  useState } from "react";
-import { MonitorPlay } from "lucide-react";
+import React, {  useEffect, useState } from "react";
+import { MonitorPlay ,SkipForward } from "lucide-react";
 import axios from "axios";
 import { useMyContext } from "@/ContextProvider";
 import { useSession } from "next-auth/react";
@@ -22,6 +22,7 @@ import { abusiveWords } from "@/Abuse";
 import toast from "react-hot-toast";
 import { YouAreBanned } from "@/components/YouAreBanned";
 import { PiWarning } from "react-icons/pi";
+import { useSocket } from "@/components/SocketProvider";
 const Live = () => {
   const [matching, setMatching] = useState(false);
   const session = useSession();
@@ -29,19 +30,17 @@ const Live = () => {
   const [send, isSending] = useState(false);
   const { room, setRoom } = useMyContext();
   const [message, setMessage] = useState("");
-  const startMatchmaking = async () => {
-    try {
-      setMatching(true);
-      const res = await axios.get("/api/getroom");
-      setMatching(false);
-      if (res.data.server) {
-        setRoom(res.data.server.id);
-      }
-    } catch (error) {
-      setRoom("");
-      setMatching(false);
-    }
-  };
+  const socket = useSocket();
+const startMatchmaking = () => {
+  if (!socket || !id) return;
+
+  socket.emit("join-room", id);
+
+  socket.once("room-joined", (roomData) => {
+    setRoom(roomData.id);
+    console.log("Room joined:", roomData);
+  });
+};
 
   const SendMessages = async () => {
     try {
@@ -93,13 +92,23 @@ const Live = () => {
     enabled: true,
     refetchOnWindowFocus: true,
   });
-  const stopMatchmaking = async () => {
-    try {
-      const res = await axios.put("/api/getroom", { id, room, capacity: -1 });
-      setRoom("");
-      window.location.reload();
-    } catch (error) {}
-  };
+  const nextMatchmaking = () => {
+    if (!socket || !id || !room) return;
+    setRoom("");
+    startMatchmaking();
+};
+
+  const stopMatchmaking = () => {
+  if (!socket || !id || !room) return;
+
+  socket.emit("leave-room", { userId: id, roomId: room });
+
+  socket.once("left-room", () => {
+    setRoom("");
+    window.location.reload();
+  });
+};
+
   if (session.data?.user?.banned)
     {
       return (<YouAreBanned/>)
@@ -151,6 +160,11 @@ const Live = () => {
               <Button onClick={stopMatchmaking} variant="destructive" size="lg">
                 <StopCircle />
                 Stop
+              </Button>
+              <Button onClick={nextMatchmaking} variant="default" size="lg">
+                Next
+                <SkipForward />
+                
               </Button>
               <div className="w-full relative flex justify-between items-center ">
                 <Input

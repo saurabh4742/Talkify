@@ -61,7 +61,7 @@ export default function LIveKItRTCComponent() {
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       
       data-lk-theme="default"
-      className=' relative flex w-full justify-center items-center shadow-lg rounded-2xl '
+      
     >
       
       <MyVideoConference  />
