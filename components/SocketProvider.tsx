@@ -29,7 +29,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 //https://chat-app-realtime-socketserver.onrender.com
   useEffect(() => {
     if (user?.id) {
-      const newSocket = io('http://localhost:4000', { autoConnect: false });
+      const newSocket = io('https://talkify-socket-server.onrender.com', { autoConnect: false });
       setSocket(newSocket);
       newSocket.connect();
       newSocket.emit("my_joining", user)
