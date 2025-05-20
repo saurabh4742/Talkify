@@ -48,7 +48,6 @@ const Live = () => {
       setRoom("");
       setMessages([]);
       setMatching(false);
-      window.location.reload();
     });
 
     return () => {
@@ -67,6 +66,7 @@ const Live = () => {
   const stopMatchmaking = () => {
     if (!socket || !id || !room) return;
     socket.emit("leave-room", { userId: id, roomId: room });
+    window.location.reload();
   };
 
   const nextMatchmaking = () => {
