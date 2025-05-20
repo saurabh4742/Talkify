@@ -48,6 +48,7 @@ const Live = () => {
       setRoom("");
       setMessages([]);
       setMatching(false);
+      window.location.reload();
     });
 
     return () => {
