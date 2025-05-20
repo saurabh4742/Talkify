@@ -35,7 +35,10 @@ useEffect(() => {
   const SpeechRecognition =
     typeof window !== "undefined" &&
     ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
-
+  if (!SpeechRecognition) {
+  console.warn("SpeechRecognition not supported on this device.");
+  return;
+}
   if (!SpeechRecognition || !id) return;
 
   const recognition = new SpeechRecognition();
