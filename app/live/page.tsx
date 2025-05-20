@@ -14,6 +14,8 @@ import { YouAreBanned } from "@/components/YouAreBanned";
 import BanPolicy from "@/components/BanPolicy";
 import LIveKItRTCComponent from "@/components/LIveKItRTCComponent";
 import { useIsClient } from "@/hooks/use-is-client";
+import { useWarning } from "@/components/WarningContext";
+import { Warning } from "@/components/Warning";
 
 interface ChatMessage {
   senderId: string;
@@ -25,12 +27,24 @@ const Live = () => {
   const id = session?.user?.id || "";
   const socket = useSocket();
   const { room, setRoom } = useMyContext();
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [matching, setMatching] = useState(false);
-
+  const { warningCount, incrementWarning } = useWarning();
+  const [showWarning, setShowWarning] = useState(false);
+    useEffect(() => {
+    if (warningCount > 3 && id) {
+      axios
+        .post("/api/liveban", { id })
+        .then(() => {
+          window.location.reload();
+        })
+        .catch((err) => {
+          console.error("Ban error:", err);
+        });
+    }
+  }, [warningCount, id]);
   useEffect(() => {
     if (!socket) return;
 
@@ -104,86 +118,91 @@ const isAbusive = (msg: string) => {
     setIsSending(false);
 
     if (isAbusive(message)) {
-      axios
-        .post("/api/liveban", { id })
-        .then(() => {
-          toast.error("Vulgar language detected. You are banned.");
-          window.location.reload();
-        })
-        .catch(() => {
-          toast.error("Error banning user.");
-        });
+      
+      incrementWarning();
+      setShowWarning(true);
     }
   };
+  useEffect(() => {
+  if (warningCount > 0 && warningCount <= 3) {
+    setShowWarning(true);
+  }
+}, [warningCount]);
     const isClient = useIsClient();
   if (!isClient) return null;
   if (session?.user?.banned) return <YouAreBanned />;
 
 return (
-  <div className="w-full sm:h-[90vh] bg-white sm:flex space-y-4 items-center justify-center p-2 text-3xl">
-    <div className="sm:h-full sm:w-4/12 sm:flex sm:flex-col justify-center gap-4 items-center">
-      <LIveKItRTCComponent />
-    </div>
+  <>
+    {showWarning && warningCount <= 3 && (
+      <Warning num={warningCount} onClose={() => setShowWarning(false)} />
+    )}
 
-    <div className="sm:h-full sm:w-8/12 w-full flex flex-col bg-background shadow-lg rounded-2xl justify-between items-center">
-      {room ? (
-        <>
-          <div className="text-lg overflow-auto w-full p-4 gap-4 sm:flex flex-col justify-center items-center">
-            {messages.map((chat, idx) => (
-              <p
-                key={idx}
-                className="w-full flex justify-start items-center"
-              >
-                <span className={`text-${chat.senderId === id ? "primary" : "red-600"}`}>
-                  <strong>{chat.senderId === id ? "You" : "Random"}:</strong>
-                </span>{" "}
-                {chat.message}
-              </p>
-            ))}
-          </div>
+    <div className="w-full sm:h-[90vh] bg-white sm:flex space-y-4 items-center justify-center p-2 text-3xl">
+      <div className="sm:h-full sm:w-4/12 sm:flex sm:flex-col justify-center gap-4 items-center">
+        <LIveKItRTCComponent />
+      </div>
 
-          <div className="w-full flex justify-between items-center p-2 gap-2">
-            <Button onClick={stopMatchmaking} variant="destructive" size="lg" className="rounded-2xl">
-              <StopCircle />
-              Stop
-            </Button>
-
-            <Button onClick={nextMatchmaking} variant="default" size="lg" className="rounded-2xl">
-              Next
-              <SkipForward />
-            </Button>
-
-            <div className="w-full relative flex justify-between items-center">
-              <Input
-                placeholder="Chat Now..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !isSending) sendMessage();
-                }}
-              />
-              <Button
-                disabled={isSending}
-                onClick={sendMessage}
-                className="absolute right-0 p-2 rounded-xl"
-                variant="outline"
-              >
-                <SendHorizontal />
-              </Button>
+      <div className="sm:h-full sm:w-8/12 w-full flex flex-col bg-background shadow-lg rounded-2xl justify-between items-center">
+        {room ? (
+          <>
+            <div className="text-lg overflow-auto w-full p-4 gap-4 sm:flex flex-col justify-center items-center">
+              {messages.map((chat, idx) => (
+                <p
+                  key={idx}
+                  className="w-full flex justify-start items-center"
+                >
+                  <span className={`text-${chat.senderId === id ? "primary" : "red-600"}`}>
+                    <strong>{chat.senderId === id ? "You" : "Random"}:</strong>
+                  </span>{" "}
+                  {chat.message}
+                </p>
+              ))}
             </div>
+
+            <div className="w-full flex justify-between items-center p-2 gap-2">
+              <Button onClick={stopMatchmaking} variant="destructive" size="lg" className="rounded-2xl">
+                <StopCircle />
+                Stop
+              </Button>
+
+              <Button onClick={nextMatchmaking} variant="default" size="lg" className="rounded-2xl">
+                Next
+                <SkipForward />
+              </Button>
+
+              <div className="w-full relative flex justify-between items-center">
+                <Input
+                  placeholder="Chat Now..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isSending) sendMessage();
+                  }}
+                />
+                <Button
+                  disabled={isSending}
+                  onClick={sendMessage}
+                  className="absolute right-0 p-2 rounded-xl"
+                  variant="outline"
+                >
+                  <SendHorizontal />
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="w-full sm:h-[90vh] bg-white flex flex-col items-center gap-4 justify-center text-sm p-2">
+            <Button size="lg" disabled={matching} onClick={startMatchmaking}>
+              <MonitorPlay className="mr-2" />
+              {matching ? "Going..." : "Go Live"}
+            </Button>
+            <BanPolicy />
           </div>
-        </>
-      ) : (
-        <div className="w-full sm:h-[90vh] bg-white flex flex-col items-center gap-4 justify-center text-sm p-2">
-          <Button size="lg" disabled={matching} onClick={startMatchmaking}>
-            <MonitorPlay className="mr-2" />
-            {matching ? "Going..." : "Go Live"}
-          </Button>
-          <BanPolicy />
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  </div>
+  </>
 );
 }
 

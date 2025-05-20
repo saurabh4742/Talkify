@@ -9,6 +9,7 @@ import Navbar from "@/components/Navbar/Navbar";
 import { MyContextProvider } from "@/ContextProvider";
 import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 import { SocketProvider } from "@/components/SocketProvider";
+import { WarningProvider } from "@/components/WarningContext";
 const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -40,7 +41,7 @@ export default async function RootLayout({
               <Toaster />
               <div className="flex justify-center h-full items-center flex-col w-full">
                 <Navbar />
-                <div className="h-full w-full">{children}</div>
+                <div className="h-full w-full"><WarningProvider>{children}</WarningProvider></div>
               </div>
             </ReactQueryProvider>
             </SocketProvider>

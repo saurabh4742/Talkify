@@ -15,8 +15,10 @@ import axios from 'axios';
 import { useMyContext } from '@/ContextProvider';
 import { abusiveWords } from "@/Abuse";
 import toast from 'react-hot-toast';
+import { useWarning } from './WarningContext';
 export default function LIveKItRTCComponent() {
-  const { room } = useMyContext();
+  const {warningCount, incrementWarning } = useWarning();
+  const { room ,setisAlone,isAlone} = useMyContext();
   const session = useSession();
   const name = session.data?.user?.name;
   const id = session.data?.user?.id;
@@ -29,47 +31,94 @@ const isAbusive = (msg: string) => {
   const normalized = normalizeText(msg);
   return abusiveWords.some((word) => normalized.includes(normalizeText(word)));
 };
-  useEffect(() => {
-    const SpeechRecognition =
-      typeof window !== "undefined" &&
-      ((window as any).SpeechRecognition ||
-        (window as any).webkitSpeechRecognition);
+useEffect(() => {
+  const SpeechRecognition =
+    typeof window !== "undefined" &&
+    ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
 
-    if (!SpeechRecognition || !id) return;
+  if (!SpeechRecognition || !id) return;
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = false;
-    recognition.lang = "en-IN";
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  recognition.lang = "en-IN";
 
-    recognition.onresult = async (event: SpeechRecognitionEvent) => {
-      const transcript = Array.from(event.results)
-        .map((result) => result[0].transcript)
-        .join(" ");
+  let isManuallyStopped = false;
+  let isRecognitionActive = false;
+  let restartTimeout: NodeJS.Timeout | null = null;
 
-      console.log("Transcript:", transcript);
-
-      if (isAbusive(transcript)) {
-        try {
-          await axios.post("/api/liveban", { id });
-          toast.error("Abusive language detected. You are banned.");
-          window.location.reload();
-        } catch (err) {
-          toast.error("Ban error occurred.");
-        }
+  const safeStart = () => {
+    if (!isRecognitionActive && !isManuallyStopped) {
+      try {
+        recognition.start();
+        isRecognitionActive = true;
+        console.log("Recognition started");
+      } catch (err) {
+        console.warn("Recognition start failed:", err);
       }
-    };
+    }
+  };
 
-    recognition.onerror = (e: any) => {
-      console.warn("Speech Recognition Error:", e.error);
-    };
+  recognition.onstart = () => {
+    isRecognitionActive = true;
+    console.log("Recognition has started.");
+  };
 
-    recognition.start();
+  recognition.onend = () => {
+    isRecognitionActive = false;
+    console.log("Recognition ended.");
+    if (!isManuallyStopped) {
+      console.log("Unexpected stop. Restarting after 500ms...");
+      restartTimeout = setTimeout(() => {
+        safeStart(); // Restart safely
+      }, 500);
+    }
+  };
 
-    return () => {
-      recognition.stop();
-    };
-  }, [id]);
+  recognition.onerror = (e: any) => {
+    console.warn("Speech Recognition Error:", e.error);
+    if (e.error !== "aborted" && !isManuallyStopped) {
+      restartTimeout = setTimeout(() => {
+        safeStart(); // Safe restart on recoverable errors
+      }, 500);
+    }
+  };
+
+  recognition.onresult = async (event: SpeechRecognitionEvent) => {
+    const transcript = Array.from(event.results)
+      .map((result) => result[0].transcript)
+      .join(" ");
+    console.log("Transcript:", transcript);
+
+    if (isAbusive(transcript)) {
+      if(!isAlone){
+  incrementWarning();
+      }
+  console.warn("⚠️ Abusive content detected!");
+
+  if (warningCount >= 3) {
+    isManuallyStopped = true;
+    recognition.stop();
+    console.warn("⛔ Recognition stopped due to abuse.");
+  } else {
+    // Soft restart for early abuse
+    recognition.stop();
+    console.warn("🟠 Soft abuse restart triggered.");
+  }
+}
+
+  };
+
+  safeStart(); // Initial start
+
+  return () => {
+    isManuallyStopped = true;
+    recognition.stop();
+    if (restartTimeout) clearTimeout(restartTimeout);
+  };
+}, [id, incrementWarning, isAlone, warningCount]);
+
+
   useEffect(() => {
     (async () => {
       if (room && id) {
@@ -119,6 +168,7 @@ const isAbusive = (msg: string) => {
 }
 
 function MyVideoConference() {
+  const { setisAlone,isAlone} = useMyContext();
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
@@ -128,7 +178,7 @@ function MyVideoConference() {
   );
 
   const uniqueParticipantIds = new Set(tracks.map((t) => t.participant.sid));
-  const isAlone = uniqueParticipantIds.size <= 1;
+  setisAlone(uniqueParticipantIds.size <= 1);
 
   if (isAlone) {
     return (
