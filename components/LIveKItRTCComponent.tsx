@@ -6,7 +6,6 @@ import {
   GridLayout,
   ParticipantTile,
   RoomAudioRenderer,
-  ControlBar,
   useTracks,
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
@@ -16,41 +15,44 @@ import axios from 'axios';
 import { useMyContext } from '@/ContextProvider';
 
 export default function LIveKItRTCComponent() {
- const {room} =useMyContext();
-  const session=useSession();
+  const { room } = useMyContext();
+  const session = useSession();
   const name = session.data?.user?.name;
-  const id=session.data?.user?.id
+  const id = session.data?.user?.id;
   const [token, setToken] = useState("");
+
   useEffect(() => {
-    
-    
     (async () => {
-      if(room && id){
+      if (room && id) {
         try {
-          const resp = await fetch(
-            `/api/livekit?room=${room}&username=${name}`
-          );
+          const resp = await fetch(`/api/livekit?room=${room}&username=${name}`);
           const data = await resp.json();
           setToken(data.token);
-          if(token){
-            const res=await axios.put("/api/getroom",{id,room,capacity:1})
+
+          if (data.token) {
+            await axios.put("/api/getroom", { id, room, capacity: 1 });
           }
         } catch (e) {
           console.error(e);
         }
       }
-      if(!token){
+
+      if (!token) {
         try {
-          const response = await axios.delete(`/api/endtoendchat`);
+          await axios.delete(`/api/endtoendchat`);
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
       }
     })();
   }, [id, name, room, token]);
 
   if (token === "") {
-    return <div className='flex justify-center items-center w-full h-full text-lg'></div>;
+    return (
+      <div className="flex justify-center items-center w-full h-full text-lg">
+        {/* Optional: add loading state */}
+      </div>
+    );
   }
 
   return (
@@ -59,17 +61,10 @@ export default function LIveKItRTCComponent() {
       audio={true}
       token={token}
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-      
       data-lk-theme="default"
-      
     >
-      
-      <MyVideoConference  />
-      
-      <RoomAudioRenderer // Render audio
-         // Capture audio track
-      />
-      {/* <ControlBar   /> */}
+      <MyVideoConference />
+      <RoomAudioRenderer />
     </LiveKitRoom>
   );
 }
@@ -80,10 +75,23 @@ function MyVideoConference() {
       { source: Track.Source.Camera, withPlaceholder: true },
       { source: Track.Source.ScreenShare, withPlaceholder: false },
     ],
-    { onlySubscribed: false },
+    { onlySubscribed: false }
   );
+
+  const uniqueParticipantIds = new Set(tracks.map((t) => t.participant.sid));
+  const isAlone = uniqueParticipantIds.size <= 1;
+
+  if (isAlone) {
+    return (
+      <div className="w-full h-full flex flex-col justify-center items-center text-center">
+        <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-green-700 font-medium">Searching for people...</p>
+      </div>
+    );
+  }
+
   return (
-    <GridLayout tracks={tracks} >
+    <GridLayout tracks={tracks}>
       <ParticipantTile />
     </GridLayout>
   );
