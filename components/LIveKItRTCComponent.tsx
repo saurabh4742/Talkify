@@ -83,7 +83,7 @@ function MyVideoConference() {
 
   if (isAlone) {
     return (
-      <div className="w-full h-full flex flex-col justify-center items-center text-center">
+      <div className="w-full sm:h-full flex flex-col justify-center items-center h-[40vh] text-center sm:p-0 p-16">
         <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p className="text-green-700 font-medium">Searching for people...</p>
       </div>
