@@ -13,6 +13,7 @@ import { SendHorizontal, StopCircle, SkipForward, MonitorPlay } from "lucide-rea
 import { YouAreBanned } from "@/components/YouAreBanned";
 import BanPolicy from "@/components/BanPolicy";
 import LIveKItRTCComponent from "@/components/LIveKItRTCComponent";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface ChatMessage {
   senderId: string;
@@ -114,7 +115,8 @@ const isAbusive = (msg: string) => {
         });
     }
   };
-
+    const isClient = useIsClient();
+  if (!isClient) return null;
   if (session?.user?.banned) return <YouAreBanned />;
 
 return (

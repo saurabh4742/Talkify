@@ -13,14 +13,63 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useMyContext } from '@/ContextProvider';
-
+import { abusiveWords } from "@/Abuse";
+import toast from 'react-hot-toast';
 export default function LIveKItRTCComponent() {
   const { room } = useMyContext();
   const session = useSession();
   const name = session.data?.user?.name;
   const id = session.data?.user?.id;
   const [token, setToken] = useState("");
+  const normalizeText = (input: string) => {
+  return input.toLowerCase().replace(/[^a-zA-Z\u0900-\u097F]/g, "").trim();
+};
 
+const isAbusive = (msg: string) => {
+  const normalized = normalizeText(msg);
+  return abusiveWords.some((word) => normalized.includes(normalizeText(word)));
+};
+  useEffect(() => {
+    const SpeechRecognition =
+      typeof window !== "undefined" &&
+      ((window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition);
+
+    if (!SpeechRecognition || !id) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.lang = "en-IN";
+
+    recognition.onresult = async (event: SpeechRecognitionEvent) => {
+      const transcript = Array.from(event.results)
+        .map((result) => result[0].transcript)
+        .join(" ");
+
+      console.log("Transcript:", transcript);
+
+      if (isAbusive(transcript)) {
+        try {
+          await axios.post("/api/liveban", { id });
+          toast.error("Abusive language detected. You are banned.");
+          window.location.reload();
+        } catch (err) {
+          toast.error("Ban error occurred.");
+        }
+      }
+    };
+
+    recognition.onerror = (e: any) => {
+      console.warn("Speech Recognition Error:", e.error);
+    };
+
+    recognition.start();
+
+    return () => {
+      recognition.stop();
+    };
+  }, [id]);
   useEffect(() => {
     (async () => {
       if (room && id) {
