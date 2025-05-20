@@ -35,11 +35,10 @@ useEffect(() => {
   const SpeechRecognition =
     typeof window !== "undefined" &&
     ((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition);
-  if (!SpeechRecognition) {
-  console.warn("SpeechRecognition not supported on this device.");
-  return;
-}
-  if (!SpeechRecognition || !id) return;
+  if (!SpeechRecognition || !id) {
+    toast.error("SpeechRecognition not supported or user ID missing.");
+    return;
+  }
 
   const recognition = new SpeechRecognition();
   recognition.continuous = true;
@@ -48,42 +47,36 @@ useEffect(() => {
 
   let isManuallyStopped = false;
   let isRecognitionActive = false;
-  let restartTimeout: NodeJS.Timeout | null = null;
 
-  const safeStart = () => {
+  const startRecognition = () => {
     if (!isRecognitionActive && !isManuallyStopped) {
       try {
         recognition.start();
         isRecognitionActive = true;
-        console.log("Recognition started");
+        console.log("🎙️ Recognition started.");
       } catch (err) {
-        console.warn("Recognition start failed:", err);
+        console.warn("❌ Recognition start failed:", err);
       }
     }
   };
 
   recognition.onstart = () => {
     isRecognitionActive = true;
-    console.log("Recognition has started.");
+    console.log("🎤 Recognition running.");
   };
 
   recognition.onend = () => {
     isRecognitionActive = false;
-    console.log("Recognition ended.");
     if (!isManuallyStopped) {
-      console.log("Unexpected stop. Restarting after 500ms...");
-      restartTimeout = setTimeout(() => {
-        safeStart(); // Restart safely
-      }, 500);
+      console.warn("🔁 Unexpected stop — restarting...");
+      startRecognition(); // Always restart unless banned
     }
   };
 
   recognition.onerror = (e: any) => {
-    console.warn("Speech Recognition Error:", e.error);
-    if (e.error !== "aborted" && !isManuallyStopped) {
-      restartTimeout = setTimeout(() => {
-        safeStart(); // Safe restart on recoverable errors
-      }, 500);
+    console.warn("⚠️ Speech Recognition Error:", e.error);
+    if (!isManuallyStopped) {
+      startRecognition(); // Recover from minor errors
     }
   };
 
@@ -94,30 +87,27 @@ useEffect(() => {
     console.log("Transcript:", transcript);
 
     if (isAbusive(transcript)) {
-      if(!isAlone){
-  incrementWarning();
+      if (!isAlone) {
+        incrementWarning();
       }
-  console.warn("⚠️ Abusive content detected!");
+      console.warn("🚫 Abusive content detected!");
 
-  if (warningCount >= 3) {
-    isManuallyStopped = true;
-    recognition.stop();
-    console.warn("⛔ Recognition stopped due to abuse.");
-  } else {
-    // Soft restart for early abuse
-    recognition.stop();
-    console.warn("🟠 Soft abuse restart triggered.");
-  }
-}
-
+      if (warningCount >= 3) {
+        console.warn("⛔ Stopping due to 3+ abuse warnings.");
+        isManuallyStopped = true;
+        recognition.stop(); // Permanent stop
+      } else {
+        console.warn("🟠 Soft restart due to abuse warning.");
+        recognition.stop(); // Will auto-restart via `onend`
+      }
+    }
   };
 
-  safeStart(); // Initial start
+  startRecognition(); // Initial launch
 
   return () => {
     isManuallyStopped = true;
     recognition.stop();
-    if (restartTimeout) clearTimeout(restartTimeout);
   };
 }, [id, incrementWarning, isAlone, warningCount]);
 
