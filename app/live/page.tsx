@@ -77,20 +77,32 @@ const Live = () => {
     }, 300);
   };
 
+  const normalizeText = (input: string) => {
+  return input
+    .toLowerCase()
+    .replace(/[^a-zA-Z\u0900-\u097F]/g, "")
+    .trim();
+};
+
+const isAbusive = (msg: string) => {
+  const normalized = normalizeText(msg);
+  return abusiveWords.some((word) => normalized.includes(normalizeText(word)));
+};
+
   const sendMessage = () => {
     if (!message.trim() || !socket || !id || !room) return;
 
-    const lowerMessage = message.toLowerCase();
-    const containsAbusiveWord = abusiveWords.some((word) =>
-      lowerMessage.includes(word.toLowerCase())
-    );
+    // const lowerMessage = message.toLowerCase();
+    // const containsAbusiveWord = abusiveWords.some((word) =>
+    //   lowerMessage.includes(word.toLowerCase())
+    // );
 
     setIsSending(true);
     socket.emit("send-message", { userId: id, roomId: room, message });
     setMessage("");
     setIsSending(false);
 
-    if (containsAbusiveWord) {
+    if (isAbusive(message)) {
       axios
         .post("/api/liveban", { id })
         .then(() => {

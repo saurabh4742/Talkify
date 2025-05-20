@@ -29,9 +29,9 @@ export default function LIveKItRTCComponent() {
           const data = await resp.json();
           setToken(data.token);
 
-          if (data.token) {
-            await axios.put("/api/getroom", { id, room, capacity: 1 });
-          }
+          // if (data.token) {
+          //   await axios.put("/api/getroom", { id, room, capacity: 1 });
+          // }
         } catch (e) {
           console.error(e);
         }
