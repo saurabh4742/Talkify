@@ -65,24 +65,24 @@ useEffect(() => {
     console.log("🎤 Recognition running.");
   };
 
-  recognition.onend = () => {
-    isRecognitionActive = false;
-    if (!isManuallyStopped) {
-      console.warn("🔁 Unexpected stop — restarting...");
-      
-   const  restartTimeout = setTimeout(() => {
-      startRecognition();
-    }, 1000);
-    clearTimeout(restartTimeout);  // Always restart unless banned
-    }
-  };
-  //   recognition.onend = () => {
+  // recognition.onend = () => {
   //   isRecognitionActive = false;
   //   if (!isManuallyStopped) {
   //     console.warn("🔁 Unexpected stop — restarting...");
-  //     startRecognition(); // Always restart unless banned
+      
+  //  const  restartTimeout = setTimeout(() => {
+  //     startRecognition();
+  //   }, 1000);
+  //   clearTimeout(restartTimeout);  // Always restart unless banned
   //   }
   // };
+    recognition.onend = () => {
+    isRecognitionActive = false;
+    if (!isManuallyStopped) {
+      console.warn("🔁 Unexpected stop — restarting...");
+      startRecognition(); // Always restart unless banned
+    }
+  };
   recognition.onerror = (e: any) => {
     console.warn("⚠️ Speech Recognition Error:", e.error);
     if (!isManuallyStopped) {
