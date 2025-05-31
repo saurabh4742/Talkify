@@ -69,10 +69,20 @@ useEffect(() => {
     isRecognitionActive = false;
     if (!isManuallyStopped) {
       console.warn("🔁 Unexpected stop — restarting...");
-      startRecognition(); // Always restart unless banned
+      
+   const  restartTimeout = setTimeout(() => {
+      startRecognition();
+    }, 1000);
+    clearTimeout(restartTimeout);  // Always restart unless banned
     }
   };
-
+  //   recognition.onend = () => {
+  //   isRecognitionActive = false;
+  //   if (!isManuallyStopped) {
+  //     console.warn("🔁 Unexpected stop — restarting...");
+  //     startRecognition(); // Always restart unless banned
+  //   }
+  // };
   recognition.onerror = (e: any) => {
     console.warn("⚠️ Speech Recognition Error:", e.error);
     if (!isManuallyStopped) {
@@ -161,7 +171,7 @@ useEffect(() => {
 }
 
 function MyVideoConference() {
-  const { setisAlone,isAlone} = useMyContext();
+  const { setisAlone, isAlone } = useMyContext();
   const tracks = useTracks(
     [
       { source: Track.Source.Camera, withPlaceholder: true },
@@ -171,7 +181,10 @@ function MyVideoConference() {
   );
 
   const uniqueParticipantIds = new Set(tracks.map((t) => t.participant.sid));
-  setisAlone(uniqueParticipantIds.size <= 1);
+
+  useEffect(() => {
+    setisAlone(uniqueParticipantIds.size <= 1);
+  }, [uniqueParticipantIds.size, setisAlone]);
 
   if (isAlone) {
     return (
