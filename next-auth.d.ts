@@ -47,3 +47,6 @@ declare global {
     SpeechRecognition: typeof SpeechRecognition;
   }
 }
+interface Window {
+  webkitAudioContext: typeof AudioContext;
+}
