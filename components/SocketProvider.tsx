@@ -25,7 +25,6 @@ interface SocketProviderProps {
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     const user = useSession().data?.user;
   const [socket, setSocket] = useState<Socket | null>(null);
-  console.log("from socket provider")
 //https://chat-app-realtime-socketserver.onrender.com
   useEffect(() => {
     if (user?.id) {
