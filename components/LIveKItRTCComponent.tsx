@@ -143,7 +143,7 @@ const normalizeText = (input: string) => {
         // Only check final results to reduce false positives
         if (data.is_final) {
           const transcript = data.channel?.alternatives?.[0]?.transcript || '';
-          console.log("Transcriptt:"+transcript );
+          // console.log("Transcriptt:"+transcript );
           if (transcript.trim() && (isAbusive(transcript) || isAbusive(normalizeText(transcript)))) {
             handleAbuseDetection(transcript);
           }
@@ -170,7 +170,7 @@ const normalizeText = (input: string) => {
   };
 
   const handleAbuseDetection = (transcript: string) => {
-    console.log("Abuse detected:", transcript);
+    // console.log("Abuse detected:", transcript);
     if (!isAlone) {
       incrementWarning();
       const remaining = 3 - (warningCount + 1);
