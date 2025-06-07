@@ -1,4 +1,4 @@
-import { BanAnimation } from '@/Lottie/BanAnimation'
+// import { BanAnimation } from '@/Lottie/BanAnimation'
 import React from 'react'
 
 const BanPolicy = () => {
