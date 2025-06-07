@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p $PORT",
-    "build": "prisma@5.11.0 db push && prisma@5.11.0 generate && next build",
+    "build": "npx prisma@5.11.0 db push && npx prisma@5.11.0 generate && next build",
     "start": "next start -p $PORT",
     "lint": "next lint"
   },
