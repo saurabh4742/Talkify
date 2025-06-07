@@ -16,7 +16,6 @@ ENV AUTH_SECRET=xxyyzzxxccddssll
 ENV DATABASE_URL="mongodb+srv://saurabhbebi:saurabh4742@cluster0.lpifw.mongodb.net/Talkify"
 # Run build (includes Prisma commands)
 RUN npm run build
-ENV PORT=3000
 # Expose port
 # Expose port - optional, mainly for documentation
 EXPOSE 3000 
