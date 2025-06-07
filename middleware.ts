@@ -21,12 +21,13 @@ export default auth((req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
 
   // Security: Allow requests from load balancer and trusted proxies
-  const allowedHosts = [
-    "talkify-app-wlzu.onrender.com" // Main load balancer
-    // "talkify-app1.onrender.com",     // Backend instances
-    // "talkify-app2.onrender.com",
-    // "talkify-app3.onrender.com"
-  ];
+// Allow both load balancer AND backend hosts
+const allowedHosts = [
+  "talkify-app-wlzu.onrender.com", // Load balancer
+  "talkify-app1.onrender.com",     // Backends
+  "talkify-app2.onrender.com",
+  "talkify-app3.onrender.com"
+];
 
   const host = headers.get("host") || "";
   const referer = headers.get("referer") || "";
