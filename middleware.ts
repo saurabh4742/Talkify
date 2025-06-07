@@ -9,6 +9,7 @@ import {
   DEFAULT_LOGIN_REDIRECT,
   publicRoutes,
 } from "./route";
+import { NextResponse } from "next/server";
 
 export default auth((req) => {
   const { nextUrl, headers } = req;
@@ -24,9 +25,9 @@ export default auth((req) => {
 // Allow both load balancer AND backend hosts
 const allowedHosts = [
   "talkify-app-wlzu.onrender.com", // Load balancer
-  "talkify-app1.onrender.com",     // Backends
-  "talkify-app2.onrender.com",
-  "talkify-app3.onrender.com"
+  // "talkify-app1.onrender.com",     // Backends
+  // "talkify-app2.onrender.com",
+  // "talkify-app3.onrender.com"
 ];
 
   const host = headers.get("host") || "";
@@ -42,20 +43,23 @@ const allowedHosts = [
     origin.includes(allowedHost) ||
     forwardedHost.includes(allowedHost)
   );
-
+  const allowedReferer = 'https://talkify-app-wlzu.onrender.com';
   // Check if request is from internal network (proxy)
-  const isFromProxy = forwardedFor && !forwardedFor.startsWith("127.0.0.1");
-
-  // Block unauthorized direct access
-  if (!isAllowedRequest && !isFromProxy) {
-    console.warn(`Blocked direct access attempt from: ${host}`);
-    return new Response("Access Denied: Direct access blocked", { 
-      status: 403,
-      headers: {
-        "X-Allowed-Hosts": allowedHosts.join(", ")
-      }
-    });
+  if (!referer.startsWith(allowedReferer)) {
+    return new NextResponse('Access Denied', { status: 403 });
   }
+  // const isFromProxy = forwardedFor && !forwardedFor.startsWith("127.0.0.1");
+
+  // // Block unauthorized direct access
+  // if (!isAllowedRequest && !isFromProxy) {
+  //   console.warn(`Blocked direct access attempt from: ${host}`);
+  //   return new Response("Access Denied: Direct access blocked", { 
+  //     status: 403,
+  //     headers: {
+  //       "X-Allowed-Hosts": allowedHosts.join(", ")
+  //     }
+  //   });
+  // }
 
   // Skip middleware for password reset and API routes
   if (isPasswordReset || isApiAuthRoute) {
