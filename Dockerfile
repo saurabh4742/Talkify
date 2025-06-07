@@ -13,6 +13,7 @@ RUN npm install
 # Copy rest of the app
 COPY . .
 
+ENV DATABASE_URL="mongodb+srv://saurabhbebi:saurabh4742@cluster0.lpifw.mongodb.net/Talkify"
 # Run build (includes Prisma commands)
 RUN npm run build
 
