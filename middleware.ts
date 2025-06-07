@@ -43,11 +43,11 @@ const allowedHosts = [
     origin.includes(allowedHost) ||
     forwardedHost.includes(allowedHost)
   );
-  const allowedReferer = 'https://talkify-app-wlzu.onrender.com';
-  // Check if request is from internal network (proxy)
-  if (!referer.startsWith(allowedReferer)) {
-    return new NextResponse('Access Denied', { status: 403 });
-  }
+  // const allowedReferer = 'https://talkify-app-wlzu.onrender.com';
+  // // Check if request is from internal network (proxy)
+  // if (!referer.startsWith(allowedReferer)) {
+  //   return new NextResponse('Access Denied', { status: 403 });
+  // }
   // const isFromProxy = forwardedFor && !forwardedFor.startsWith("127.0.0.1");
 
   // // Block unauthorized direct access
