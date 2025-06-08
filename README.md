@@ -45,8 +45,8 @@ RUN npm install
 COPY . .
 
 # Set environment variables
-ENV AUTH_SECRET=xxyyzzxxccddssll
-ENV DATABASE_URL="mongodb+srv://saurabhbebi:saurabh4742@cluster0.lpifw.mongodb.net/Talkify"
+ENV AUTH_SECRET=xxyyzzx********
+ENV DATABASE_URL="mongodb+srv://saurabhbebi:**************"
 
 # Build the application (includes Prisma schema generation)
 RUN npm run build
