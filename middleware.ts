@@ -23,12 +23,12 @@ export default auth((req) => {
 
   // Security: Allow requests from load balancer and trusted proxies
 // Allow both load balancer AND backend hosts
-const allowedHosts = [
-  "talkify-app-wlzu.onrender.com", // Load balancer
-  // "talkify-app1.onrender.com",     // Backends
-  // "talkify-app2.onrender.com",
-  // "talkify-app3.onrender.com"
-];
+// const allowedHosts = [
+//   "talkify-app-wlzu.onrender.com", // Load balancer
+//   // "talkify-app1.onrender.com",     // Backends
+//   // "talkify-app2.onrender.com",
+//   // "talkify-app3.onrender.com"
+// ];
 
   const host = headers.get("host") || "";
   const referer = headers.get("referer") || "";
@@ -37,29 +37,27 @@ const allowedHosts = [
   const forwardedFor = headers.get("x-forwarded-for") || "";
 
   // Check if request comes from allowed source
-  const isAllowedRequest = allowedHosts.some(allowedHost => 
-    host.includes(allowedHost) ||
-    referer.includes(allowedHost) ||
-    origin.includes(allowedHost) ||
-    forwardedHost.includes(allowedHost)
-  );
-  // const allowedReferer = 'https://talkify-app-wlzu.onrender.com';
-  // // Check if request is from internal network (proxy)
-  // if (!referer.startsWith(allowedReferer)) {
-  //   return new NextResponse('Access Denied', { status: 403 });
-  // }
-  // const isFromProxy = forwardedFor && !forwardedFor.startsWith("127.0.0.1");
+  const allowedHosts = [
+  "your-nginx-domain.com", // Only allow requests via this NGINX domain
+];
 
-  // // Block unauthorized direct access
-  // if (!isAllowedRequest && !isFromProxy) {
-  //   console.warn(`Blocked direct access attempt from: ${host}`);
-  //   return new Response("Access Denied: Direct access blocked", { 
-  //     status: 403,
-  //     headers: {
-  //       "X-Allowed-Hosts": allowedHosts.join(", ")
-  //     }
-  //   });
-  // }
+const isAllowedRequest = allowedHosts.some(allowedHost =>
+  host.includes(allowedHost) ||
+  referer.includes(allowedHost) ||
+  origin.includes(allowedHost) ||
+  forwardedHost.includes(allowedHost)
+);
+
+// Block if direct or non-NGINX access
+if (!isAllowedRequest) {
+  return new Response("Access Denied", {
+    status: 403,
+    headers: {
+      "X-Allowed-Hosts": allowedHosts.join(", "),
+    },
+  });
+}
+
 
   // Skip middleware for password reset and API routes
   if (isPasswordReset || isApiAuthRoute) {
