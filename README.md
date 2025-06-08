@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Talkify Frontend
 
-## Getting Started
+Welcome to the **Talkify Frontend** repository — the user-facing React & Next.js application for Talkify, a real-time video and chat platform.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Project Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Talkify is a scalable web app that supports real-time video calls, messaging, and user authentication. The frontend is built with **Next.js 14** and connects to MongoDB via Prisma, using Socket.IO for messaging and LiveKit for video calls.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Multiple frontend instances run simultaneously to support load balancing and failover. Requests are routed dynamically via a custom NGINX reverse proxy setup.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+---
 
-## Learn More
+## 🛠 Technology Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework:** Next.js 14 with React and TypeScript
+- **Backend:** API routes powered by Next.js
+- **Database:** MongoDB Atlas accessed through Prisma ORM
+- **Authentication:** Clerk.js
+- **Real-time Communication:** Socket.IO (chat), LiveKit (video calls)
+- **File Uploads:** UploadThing
+- **Containerization:** Docker (optional local/development use)
+- **Deployment:** Vercel (multiple instances for load balancing)
+- **Reverse Proxy / Load Balancer:** NGINX with health checks and dynamic routing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 📦 Docker Setup
 
-## Deploy on Vercel
+This repo includes a `Dockerfile` for containerized deployment and local testing:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```Dockerfile
+# Use Node 20 base image
+FROM node:20
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Set working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy rest of the source code
+COPY . .
+
+# Set environment variables
+ENV AUTH_SECRET=xxyyzzxxccddssll
+ENV DATABASE_URL="mongodb+srv://saurabhbebi:saurabh4742@cluster0.lpifw.mongodb.net/Talkify"
+
+# Build the application (includes Prisma schema generation)
+RUN npm run build
+
+# Expose port (main app port)
+EXPOSE 3000
+
+# Start the Next.js server
+CMD ["npm", "start"]
