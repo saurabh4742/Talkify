@@ -30,9 +30,10 @@ export default auth((req) => {
 const allowedHosts = [
   "talkify-app-wlzu.onrender.com", // NGINX proxy
   "talkify-io.vercel.app", 
-  "talkify-app2.onrender.com",
-  "talkify-app1.onrender.com",
-  "talkify-app3.onrender.com",        // Vercel frontend domain
+  // "talkify-app2.onrender.com",
+  // "talkify-app1.onrender.com",
+  // "talkify-app3.onrender.com", 
+  "talkify-io2.vercel.app"       // Vercel frontend domain
 ];
 
 const isAllowedRequest = allowedHosts.some(allowedHost =>
