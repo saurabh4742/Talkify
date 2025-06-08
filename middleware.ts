@@ -37,16 +37,18 @@ export default auth((req) => {
   const forwardedFor = headers.get("x-forwarded-for") || "";
 
   // Check if request comes from allowed source
-  const allowedHosts = [
-  "talkify-app-wlzu.onrender.com", // Only allow requests via this NGINX domain
+const allowedHosts = [
+  "talkify-app-wlzu.onrender.com", // NGINX proxy
+  "talkify-io.vercel.app",         // Vercel frontend domain
 ];
 
 const isAllowedRequest = allowedHosts.some(allowedHost =>
-  host.includes(allowedHost) ||
+  host === allowedHost ||
   referer.includes(allowedHost) ||
   origin.includes(allowedHost) ||
-  forwardedHost.includes(allowedHost)
+  forwardedHost === allowedHost
 );
+
 
 // Block if direct or non-NGINX access
 if (!isAllowedRequest) {
