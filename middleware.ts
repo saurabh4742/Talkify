@@ -38,7 +38,7 @@ export default auth((req) => {
 
   // Check if request comes from allowed source
   const allowedHosts = [
-  "your-nginx-domain.com", // Only allow requests via this NGINX domain
+  "talkify-app-wlzu.onrender.com", // Only allow requests via this NGINX domain
 ];
 
 const isAllowedRequest = allowedHosts.some(allowedHost =>
