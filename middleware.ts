@@ -26,14 +26,16 @@ export default auth((req) => {
   const origin = headers.get("origin") || "";
   const forwardedHost = headers.get("x-forwarded-host") || "";
 
-  // Check if request comes from allowed source
+
 const allowedHosts = [
-  "talkify-app-wlzu.onrender.com", // NGINX proxy
+  "talkify-app-wlzu.onrender.com", 
   "talkify-io.vercel.app", 
   "talkify-app2.onrender.com",
   "talkify-app1.onrender.com",
   "talkify-app3.onrender.com", 
-  "talkify-io2.vercel.app"       // Vercel frontend domain
+  "talkify-io2.vercel.app",
+  "talkify-8b6z.vercel.app",
+  "talkify-io3.vercel.app"       
 ];
 
 const isAllowedRequest = allowedHosts.some(allowedHost =>

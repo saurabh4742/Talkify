@@ -7,7 +7,7 @@ export const {
   handlers: { GET, POST },
   auth,signIn,signOut
 } = NextAuth({
-  debug: true, // 
+  debug: true, 
   trustHost: true, 
   events:{
     async linkAccount({user}){
