@@ -7,6 +7,8 @@ export const {
   handlers: { GET, POST },
   auth,signIn,signOut
 } = NextAuth({
+  debug: true, // 
+  trustHost: true, 
   events:{
     async linkAccount({user}){
       await db.user.update({
