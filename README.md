@@ -1,57 +1,80 @@
 # Talkify Frontend
 
-Welcome to the **Talkify Frontend** repository — the user-facing React & Next.js application for Talkify, a real-time video and chat platform.
+**Talkify** is a real-time auto-matching video and chat application, similar in concept to Omegle, but designed with advanced safety and abuse prevention features to protect users — especially children — from vocal and written abuse.
 
 ---
 
 ## 🚀 Project Overview
 
-Talkify is a scalable web app that supports real-time video calls, messaging, and user authentication. The frontend is built with **Next.js 14** and connects to MongoDB via Prisma, using Socket.IO for messaging and LiveKit for video calls.
+Talkify connects users randomly for real-time conversations via video and chat with a seamless "Next" option to move on to another match instantly. Unlike other anonymous chat apps, Talkify integrates **real-time detection of vocal and written abuse** to provide a safer environment for all users, preventing harassment and inappropriate content.
 
-Multiple frontend instances run simultaneously to support load balancing and failover. Requests are routed dynamically via a custom NGINX reverse proxy setup.
+Key highlights:
+
+- Auto-matching of users in real time, with easy “Next” to switch partners
+- Real-time voice abuse detection during video calls (using LiveKit integration)
+- Written chat abuse detection with instant filtering and warnings
+- Scalable frontend built with Next.js & React for smooth user experience
+- Multiple backend instances with dynamic load balancing via custom NGINX proxy
+- Secure authentication with Clerk.js and data persistence via MongoDB & Prisma
 
 ---
 
 ## 🛠 Technology Stack
 
-- **Framework:** Next.js 14 with React and TypeScript
-- **Backend:** API routes powered by Next.js
-- **Database:** MongoDB Atlas accessed through Prisma ORM
-- **Authentication:** Clerk.js
-- **Real-time Communication:** Socket.IO (chat), LiveKit (video calls)
+- **Frontend:** Next.js 14 with React and TypeScript
+- **Authentication:** Clerk.js for secure user login and management
+- **Database:** MongoDB Atlas managed via Prisma ORM
+- **Real-time Communication:**  
+  - **Video calls:** LiveKit  
+  - **Chat:** Socket.IO
 - **File Uploads:** UploadThing
-- **Containerization:** Docker (optional local/development use)
-- **Deployment:** Vercel (multiple instances for load balancing)
-- **Reverse Proxy / Load Balancer:** NGINX with health checks and dynamic routing
+- **Containerization:** Docker (for local testing and production builds)
+- **Deployment:** Vercel hosting with multiple instances
+- **Load Balancing & Reverse Proxy:** NGINX with custom health checks and dynamic routing
+
+---
+
+## 🛡 Safety & Abuse Detection
+
+The core of Talkify’s safety feature set includes:
+
+- **Vocal Abuse Detection:**  
+  Audio streams are monitored in real time during LiveKit video calls to detect offensive language or abusive behavior.
+  
+- **Written Abuse Detection:**  
+  Chat messages are filtered and analyzed to block offensive or harmful content immediately.
+  
+- **Warning & Ban System:**  
+  Users who violate abuse policies receive warnings and may be banned automatically to maintain a safe community.
 
 ---
 
 ## 📦 Docker Setup
 
-This repo includes a `Dockerfile` for containerized deployment and local testing:
+The project includes a `Dockerfile` for building and running the frontend app in a containerized environment.
 
 ```Dockerfile
 # Use Node 20 base image
 FROM node:20
 
-# Set working directory
+# Set working directory inside container
 WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy rest of the source code
+# Copy the entire project source
 COPY . .
 
-# Set environment variables
-ENV AUTH_SECRET=xxyyzzx********
-ENV DATABASE_URL="mongodb+srv://saurabhbebi:**************"
+# Set environment variables (example values, replace with your own)
+ENV AUTH_SECRET=xxyyzzxxccddssll
+ENV DATABASE_URL="mongodb+srv://username:password@cluster0.mongodb.net/Talkify"
 
-# Build the application (includes Prisma schema generation)
+# Build the Next.js app including Prisma schema generation
 RUN npm run build
 
-# Expose port (main app port)
+# Expose the default port
 EXPOSE 3000
 
 # Start the Next.js server
