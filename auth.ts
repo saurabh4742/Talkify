@@ -30,7 +30,10 @@ export const {
     },
     async jwt({token}){
       return token
-    }
+    },async redirect({ url, baseUrl }) {
+    return baseUrl; 
+  }
+
   },
   adapter:PrismaAdapter(db),
   session:{strategy:"jwt"},
